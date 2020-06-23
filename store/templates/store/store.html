@@ -1,0 +1,77 @@
+{% extends  'store/base.html' %}
+{% load static %}
+{% load humanize %}
+
+<!-- Title for Homepage -->
+{% block title %} Uptown | Drinks {% endblock %}
+
+<!-- Home carousel -->
+{% block content1 %}
+<div class="container">
+    <div class="partners-container">
+        <div class="container">
+            <div class="partners-carousel owl-carousel owl-theme">
+                <a href="#" class="partner">
+                    <img src="{% static 'assets/images/IMG-20200512-WA0006.jpg' %}" alt="logo">
+                </a>
+                <a href="#" class="partner">
+                    <img src="{% static 'assets/images/IMG-20200512-WA0008.jpg' %}" alt="logo">
+                </a>
+                <a href="#" class="partner">
+                    <img src="{% static 'assets/images/IMG-20200512-WA0010.jpg' %}" alt="logo">
+                </a>
+                <a href="#" class="partner">
+                    <img src="{% static 'assets/images/IMG-20200512-WA0011.jpg' %}" alt="logo">
+                </a>
+                <a href="#" class="partner">
+                    <img src="{% static 'assets/images/IMG-20200512-WA0015.jpg' %}" alt="logo">
+                </a>
+                <a href="#" class="partner">
+                    <img src="{% static 'assets/images/IMG-20200512-WA0012.jpg' %}" alt="logo">
+                </a>
+                <a href="#" class="partner">
+                    <img src="{% static 'assets/images/IMG-20200512-WA0009.jpg' %}" alt="logo">
+                </a>
+            </div><!-- End .partners-carousel -->
+        </div><!-- End .container -->
+    </div><!-- End .partners-container -->
+</div>
+{% endblock %}
+
+<!-- Todays offers -->
+{% block content %}
+    <div class="container">
+        <div class="pt-1 pb-1 mb-2 col-12">
+            <div class="solid-border"><span class="topic-border subtopic pb-1">TODAYS OFFERS</span></div>
+        </div>
+        <div class="row row-sm product-ajax-grid">
+            {% for product in products %}
+            <div class="col-6 col-md-4 col-xl-5col">
+                <div class="product-default text-center">
+                    <figure>
+                        <a href="{% url 'product' pk=product.pk %}">
+                            <img src="/uploads/{{product.picture}}">
+                        </a>
+                    </figure>
+                    <div class="product-details">
+                        <h2 class="product-title">
+                            <a href="#">{{product.name}}</a>
+                        </h2>
+                        <h2 class="product-title">{{product.capacity}}</h2>
+                        <div class="price-box">
+                            <span class="product-price">KES {{product.cash|floatformat:2|intcomma}}</span>
+                        </div><!-- End .price-box -->
+                        <div class="product-action">
+                            <a href="https://api.whatsapp.com/send?phone=0713285448" class="btn-icon-wish"><i class="fab fa-whatsapp"></i></a>
+                            <button class="btn-icon btn-add-cart update-cart" data-product={{product.id}} data-action="add" data-toggle="modal" >
+                              <!-- data-target="#addCartModal" -->
+                              <i class="icon-bag"></i>ADD TO CART</button>
+                            <a href="#" class="btn-quickview" title="Quick View"><i class="fas fa-external-link-alt"></i></a>
+                        </div>
+                    </div><!-- End .product-details -->
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

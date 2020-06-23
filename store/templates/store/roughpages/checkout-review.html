@@ -1,0 +1,191 @@
+{% extends  'store/base.html' %}
+{% load static %}
+{% load humanize %}
+
+<!-- Title for Homepage -->
+{% block title %} Whisky | All Whiskies {% endblock %}
+
+<!-- Todays offers -->
+{% block content %}
+<main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html"><i class="icon-home"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav>
+
+    <div class="container">
+        <ul class="checkout-progress-bar">
+            <li>
+                <span>Shipping</span>
+            </li>
+            <li class="active">
+                <span>Review &amp; Payments</span>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="order-summary">
+                    <h3>Summary</h3>
+
+                    <h4>
+                        <a data-toggle="collapse" href="#order-cart-section" class="collapsed" role="button" aria-expanded="false" aria-controls="order-cart-section">{{order.get_cart_items}} products in Cart</a>
+                    </h4>
+
+                    <div class="collapse" id="order-cart-section">
+                        <table class="table table-mini-cart">
+                            <tbody>
+                              {% for item in items %}
+                                <tr>
+                                    <td class="product-col">
+                                        <figure class="product-image-container">
+                                            <a href="product.html" class="product-image">
+                                                <img src="{{item.product.imageURL}}" alt="product">
+                                            </a>
+                                        </figure>
+                                        <div>
+                                            <h2 class="product-title">
+                                                <a href="product.html">{{item.product.name}}</a>
+                                            </h2>
+
+                                            <span class="product-qty">Qty: {{item.quantity}}</span>
+                                        </div>
+                                    </td>
+                                    <td class="price-col">Ksh. {{item.product.cash|floatformat:2|intcomma}}</td>
+                                </tr>
+                                {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div><!-- End #order-cart-section -->
+                </div><!-- End .order-summary -->
+
+                <div class="checkout-info-box">
+                    <h3 class="step-title">Ship To:
+                        <a href="#" title="Edit" class="step-title-edit"><span class="sr-only">Edit</span><i class="icon-pencil"></i></a>
+                    </h3>
+
+                    <address>
+                        Desmond Mason <br>
+                        123 Street Name, City, USA <br>
+                        Los Angeles, California 03100 <br>
+                        United States <br>
+                        (123) 456-7890
+                    </address>
+                </div><!-- End .checkout-info-box -->
+            </div><!-- End .col-lg-4 -->
+
+            <div class="col-lg-8 order-lg-first">
+                <div class="checkout-payment" id="form">
+                    <h2 class="step-title">Payment Method:</h2>
+
+                    <h4>Cash on Delivery / Mpesa</h4>
+
+                    <form class="" action="index.html" method="post" id="form1">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div>
+                                <address>
+                                  <form class="" action="index.html" method="post" id="form1">
+                                    <span><input class="hidden" type="text" name="name" value="">Joel</span>
+                                      <br>
+                                    <span><input class="hidden" type="text" name="phone" value="">0701189905</span>
+                                      <br>
+                                    <span><input class="hidden" type="text" name="address" value="">Ngara</span>
+                                       <br>
+                                    <span><input class="hidden" type="text" name="city" value="">Nairobi</span>
+                                       <br>
+                                  </form>
+                                </address>
+                            </div><!-- End #checkout-shipping-address -->
+                          </div>
+                          <div class="col-md-6">
+                            <div class="box-element hidden" id="payment-info">
+                                <small>Paypal Options</small>
+                                <div class="clearfix" id="make-payment">
+                                    <a href="#" class="btn btn-primary float-right">MAKE PAYMENT</a>
+
+                                </div><!-- End .clearfix -->
+                            </div><!-- End #checkout-shipping-address -->
+                          </div>
+
+                        </div>
+                        <div class="clearfix" id="form-button">
+                            <a href="#" class="btn btn-primary float-right">Place Order</a>
+                        </div><!-- End .clearfix -->
+                    </form>
+                </div><!-- End .checkout-payment -->
+
+                <div class="checkout-discount">
+                    <h4>
+                        <a data-toggle="collapse" href="#checkout-discount-section" class="collapsed" role="button" aria-expanded="false" aria-controls="checkout-discount-section">Apply Discount Code</a>
+                    </h4>
+
+                    <div class="collapse" id="checkout-discount-section">
+                        <form action="#">
+                                <input type="text" class="form-control form-control-sm" placeholder="Enter discount code"  required>
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">Apply Discount</button>
+                        </form>
+                    </div><!-- End .collapse -->
+                </div><!-- End .checkout-discount -->
+            </div><!-- End .col-lg-8 -->
+        </div><!-- End .row -->
+    </div><!-- End .container -->
+
+</main><!-- End .main -->
+
+<script type="text/javascript">
+  var shipping = '{{order.shipping}}'
+  var  total = '{{oder.get_cart_tota|floatformat:2|intcomma}}'
+  if(shipping == 'False' && user != 'AnonymousUser')
+  // document.getElementById('form-wrapper').classList.add("hidden");
+  // Show payment if logged in user wants to buy an item that does not require shipping
+  document.getElementById('payment-info').classList.remove("hiddden");
+
+
+  var form = document.getElementById('form')
+  form.addEventListener('click', function(e){
+    e.preventDefault()
+    // console.log('Form Submitted')
+    document.getElementById('form-button').classList.add("hidden");
+    document.getElementById('payment-info').classList.remove("hidden");
+  })
+
+  document.getElementById('make-payment').addEventListener('click', function(e){
+    submitFormData()
+  })
+
+  var form1 = document.getElementById('form1')
+  form1.addEventListener('submit', function(e){
+    e.preventDefault()
+    console.log('Form Submitted')
+    document.getElementById('form-button').classList.add("hidden");
+    document.getElementById('payment-info').classList.remove("hidden");
+  })
+
+  function submitFormData(){
+    console.log('Payment Button Clicked')
+
+    var userFormData = {
+      'name':null,
+      'email':null,
+      'total': total,
+    }
+
+    var shippingInfo = {
+      'name':null,
+      'phone':null,
+      'address':null,
+      'city': null,
+    }
+
+    if(shipping != 'False'){
+      shippingInfo.address
+    }
+  }
+</script>
+{% endblock %}

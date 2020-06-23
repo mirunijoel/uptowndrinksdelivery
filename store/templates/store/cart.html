@@ -1,0 +1,137 @@
+{% extends  'store/base.html' %}
+{% load static %}
+{% load humanize %}
+
+<!-- Title for Homepage -->
+{% block title %} Whisky | All Whiskies {% endblock %}
+
+<!-- Todays offers -->
+{% block content %}
+    <main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html"><i class="icon-home"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-table-container">
+                    <table class="table table-cart">
+                        <thead>
+                            <tr>
+                                <th class="product-col">Product</th>
+                                <th class="price-col">Price</th>
+                                <th class="qty-col">Qty</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr class="product-row">
+                                <td class="product-col">
+                                    <figure class="product-image-container">
+                                        <a href="product.html" class="product-image">
+                                            <img src="{{item.product.imageURL}}" alt="product">
+                                        </a>
+                                    </figure>
+                                    <h2 class="product-title">
+                                        <a href="product.html">{{item.product.name}}</a>
+                                    </h2>
+                                </td>
+                                <td>Ksh. {{item.product.cash|floatformat:2|intcomma}}</td>
+                                <td>
+                                  <p class="quantity">{{item.quantity}}</p>
+                                  <div class="quantity">
+                                    <img data-product="{{item.product.id}}" data-action="add" class="chg-quantity update-cart" src="{% static  'assets/images/3+arrow-up.png' %}">
+                                    <img data-product="{{item.product.id}}" data-action="remove" class="chg-quantity update-cart" src="{% static  'assets/images/2+arrow-down.png' %}">
+                                  </div>
+                                </td>
+                                <td>Ksh. {{item.get_total|floatformat:2|intcomma}}</td>
+                            </tr>
+                            <tr class="product-action-row">
+                                <td colspan="4" class="clearfix">
+                                    <div class="float-left">
+                                        <a href="#" class="btn-move">Move to Wishlist</a>
+                                    </div><!-- End .float-left -->
+
+                                    <div class="float-right">
+                                        <a href="#" title="Edit product" class="btn-edit"><span class="sr-only">Edit</span><i class="icon-pencil"></i></a>
+                                        <a href="#" title="Remove product" class="btn-remove"><span class="sr-only">Remove</span></a>
+                                    </div><!-- End .float-right -->
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="clearfix">
+                                    <div class="float-left">
+                                        <a href="category.html" class="btn btn-outline-secondary">Continue Shopping</a>
+                                    </div><!-- End .float-left -->
+
+                                    <div class="float-right">
+                                        <a href="#" class="btn btn-outline-secondary btn-clear-cart">Clear Shopping Cart</a>
+                                        <a href="#" class="btn btn-outline-secondary btn-update-cart">Update Shopping Cart</a>
+                                    </div><!-- End .float-right -->
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div><!-- End .cart-table-container -->
+
+                <div class="cart-discount">
+                    <h4>Apply Discount Code</h4>
+                    <form action="#">
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-sm" placeholder="Enter discount code"  required>
+                            <div class="input-group-append">
+                                <button class="btn btn-sm btn-primary" type="submit">Apply Discount</button>
+                            </div>
+                        </div><!-- End .input-group -->
+                    </form>
+                </div><!-- End .cart-discount -->
+            </div><!-- End .col-lg-8 -->
+
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h3>Summary</h3>
+
+                    <table class="table table-totals">
+                        <tbody>
+                            <tr>
+                                <td>Subtotal</td>
+                                <td>Ksh. {{order.get_cart_total|floatformat:2}}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Tax</td>
+                                <td>Ksh. 0.00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>Order Total</td>
+                                <td>Ksh. {{order.get_cart_total|floatformat:2|intcomma}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="checkout-methods">
+                        <a href="{% url 'checkout' %}" class="btn btn-block btn-sm btn-primary">Go to Checkout</a><!--
+                        <a href="#" class="btn btn-link btn-block">Check Out with Multiple Addresses</a> -->
+                    </div><!-- End .checkout-methods -->
+                </div><!-- End .cart-summary -->
+            </div><!-- End .col-lg-4 -->
+        </div><!-- End .row -->
+    </div><!-- End .container -->
+
+    <div class="mb-6"></div><!-- margin -->
+</main><!-- End .main -->
+{% endblock %}

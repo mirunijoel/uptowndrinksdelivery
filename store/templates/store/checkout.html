@@ -1,0 +1,215 @@
+{% extends  'store/base.html' %}
+{% load static %}
+{% load humanize %}
+
+<!-- Title for Homepage -->
+{% block title %} Whisky | All Whiskies {% endblock %}
+
+<!-- Todays offers -->
+{% block content %}
+<main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html"><i class="icon-home"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+              <h2 class="step-title">Review & Payments</h2>
+              <div class="box-element" id="form-wrapper">
+
+                <form class="" action="" method="post" id="form">
+
+
+                  <div class="" id="user-info">
+
+                    <div class="form-group required-field">
+                      <label>Name </label>
+                      <input required class="form-control" type="text" name="name" value="" placeholder="Name..">
+                    </div>
+
+                    <div class="form-group required-field">
+                        <label>Email Address </label>
+                        <div class="form-control-tooltip">
+                            <input type="email" class="form-control" name="email" required>
+                            <span class="input-tooltip" data-toggle="tooltip" title="We'll send your order confirmation here." data-placement="right"><i class="icon-question-circle"></i></span>
+                        </div><!-- End .form-control-tooltip -->
+                    </div><!-- End .form-group -->
+
+                    <p>You already have an account with us. Sign in or continue as guest.</p>
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary">LOGIN</button>
+                        <a href="forgot-password.html" class="forget-pass"> Forgot your password?</a>
+                    </div><!-- End .form-footer -->
+                  </div>
+
+                  <div class="" id="shipping-info">
+                    <h2 class="step-title">Shipping</h2>
+
+                    <div class="form-group required-field">
+                        <label>Street Address </label>
+                        <input type="text" name="address" class="form-control" placeholder="Address" required>
+                    </div><!-- End .form-group -->
+
+                    <div class="form-group required-field">
+                        <label>City  </label>
+                        <input type="text" name="city" class="form-control" placeholder="Name of the City" required>
+                    </div><!-- End .form-group -->
+
+                    <div class="form-group required-field">
+                        <label>Phone Number </label>
+                        <input type="tel" name="phone" class="form-control" placeholder="0712345678" required>
+                    </div><!-- End .form-group -->
+
+                  </div>
+
+                  <button id="form-button" class="btn btn-success btn-block" type="submit">CONTINUE</button>
+
+                </form>
+              </div>
+
+              <br>
+              <div class="box-element hidden" id="payment-info">
+                <h2 class="step-title">Pay now</h2>
+
+                <button id="make-payment" class="btn btn-primary" type="button" name="button">Make Payment</button>
+
+              </div>
+
+            </div><!-- End .col-lg-8 -->
+
+            <div class="col-lg-6">
+                <div class="order-summary">
+                    <h3>Summary</h3>
+
+                    <h4>
+                        <a data-toggle="collapse" href="#order-cart-section" class="collapsed" role="button" aria-expanded="false" aria-controls="order-cart-section">{{order.get_cart_items}} products in Cart</a>
+                    </h4>
+
+                    <div class="collapse" id="order-cart-section">
+                        <table class="table table-mini-cart">
+                            <tbody>
+                              {% for item in items %}
+                                <tr>
+                                    <td class="product-col">
+                                        <figure class="product-image-container">
+                                            <a href="product.html" class="product-image">
+                                                <img src="{{item.product.imageURL}}" alt="product">
+                                            </a>
+                                        </figure>
+                                        <div>
+                                            <h2 class="product-title">
+                                                <a href="product.html">{{item.product.name}}</a>
+                                            </h2>
+
+                                            <span class="product-qty">Qty: {{item.quantity}}</span>
+                                        </div>
+                                    </td>
+                                    <td class="price-col">Ksh. {{item.product.cash|floatformat:2}}</td>
+                                </tr>
+                                {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div><!-- End #order-cart-section -->
+                </div><!-- End .order-summary -->
+            </div><!-- End .col-lg-4 -->
+        </div><!-- End .row -->
+    </div><!-- End .container -->
+
+    <div class="mb-6"></div><!-- margin -->
+</main><!-- End .main -->
+
+<script type="text/javascript">
+
+  var shipping = '{{order.shipping}}'
+  var total = '{{order.get_cart_total}}'
+
+  if(shipping == 'False'){
+
+    document.getElementById('shipping-info').innerHTML = ''
+
+  }
+
+  if(user != 'AnonymousUser'){
+    document.getElementById('user-info').innerHTML = ''
+  }
+
+  if(shipping == 'False' && user != 'AnonymousUser'){
+    // Hide the entire form if user is logged in and shipping is false
+    document.getElementById('form-wrapper').classList.add("hidden");
+    // Show payment if the logged in user wants to buy an item that does not require shipping
+    document.getElementById('payment-info').classList.remove("hidden");
+  }
+
+  var form = document.getElementById('form')
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault()
+    console.log('Form Submitted ...')
+    document.getElementById('form-button').classList.add("hidden");
+    document.getElementById('payment-info').classList.remove("hidden");
+  })
+
+  document.getElementById('make-payment').addEventListener('click', function(e){
+    submitFormData()
+  })
+
+  function submitFormData(){
+    console.log('Payment button clicked')
+
+    var userFormData ={
+      'name': null,
+      'email': null,
+      'total': total,
+    }
+
+    var shippingInfo ={
+      'name': null,
+      'address': null,
+      'city': null,
+      'phone': null,
+    }
+
+    if(shipping != 'False'){
+      shippingInfo.name = form.name.value
+      shippingInfo.address = form.address.value
+      shippingInfo.city = form.city.value
+      shippingInfo.phone = form.phone.value
+    }
+
+    if(user == 'AnonymousUser'){
+      userFormData.name = form.name.value
+      userFormData.email = form.email.value
+    }
+
+    var url = '/process_order/'
+    fetch(url, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-CSRFToken':csrftoken,
+      },
+      body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Success:', data);
+      alert('Transaction completed');
+
+      cart = {}
+      document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+      window.location.href = "{% url 'store' %}"
+    })
+
+  }
+
+</script>
+
+{% endblock %}

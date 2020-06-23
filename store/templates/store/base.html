@@ -1,0 +1,410 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title> {% block title %} Uptown | Drinks {% endblock %} </title>
+
+    <meta name="keywords" content="HTML5 Template" />
+    <meta name="description" content="Uptown Drinks Delivery">
+    <meta name="author" content="cktecksolutions">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/images/icons/favicon.ico' %}">
+
+    <script type="text/javascript">
+      var user = '{{request.user}}'
+
+      function getToken(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+      var csrftoken = getToken('csrftoken');
+
+
+      function getCookie(name) {
+        // Split cookie string and get all individual name=value pairs in an array
+          var cookieArr = document.cookie.split(';');
+
+          // Loop through the array elements
+              for (var i = 0; i < cookieArr.length; i++) {
+                  var cookiePair = cookieArr[i].split("=");
+
+                  /* Reviewing whitespace at the beginning of the cookie fontawesome
+                  and compare it with the given string */
+                  if (name  == cookiePair[0].trim()) {
+                    // Decode the cookie value and return
+                      return decodeURIComponent(cookiePair[1]);
+                  }
+              }
+              // Return null if not found
+              return null;
+          }
+
+      var cart = JSON.parse(getCookie('cart'))
+      if(cart == undefined){
+        cart = {}
+        console.log('Cart was created!')
+        document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=path=/"
+      }
+      console.log('Cart:', cart)
+    </script>
+
+    <script type="text/javascript">
+        WebFontConfig = {
+            google: { families: [ 'Open+Sans:300,400,600,700,800','Poppins:300,400,500,600,700','Segoe Script:300,400,500,600,700' ] }
+        };
+        (function(d) {
+            var wf = d.createElement('script'), s = d.scripts[0];
+            wf.src = "{% static 'assets/js/webfont.js' %}";
+            wf.async = true;
+            s.parentNode.insertBefore(wf, s);
+        })(document);
+    </script>
+
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/fontawesome-free/css/all.min.css' %}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-top">
+                <div class="container d-none d-md-block">
+                    <div class="header-left header-dropdowns">
+                        <div class="dropdown compare-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <img src="{% static 'assets/images/logo1.png' %}" class="img-fluid" style="width: 100px;">
+                            </a>
+                        </div><!-- End .dropdown -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <div class="container"><p class="" style="margin-left: 400px; font-size: 20px; color: #530201;margin-top: -30px; margin-bottom: 0px;">UPTOWN DRINKS DELIVERY KENYA </p></div>
+                    </div><!-- End .header-righcontainert -->
+                </div><!-- End .container -->
+            </div><!-- End .header-top -->
+
+            <div class="header-middle">
+                <div class="container">
+                    <div class="header-left">
+                        <button class="mobile-menu-toggler" type="button">
+                            <i class="icon-menu"></i>
+                        </button>
+                        <div class="header-search">
+                            <a href="#" class="search-toggle" role="button"><i class="icon-magnifier"></i></a>
+                            <form action="#" method="get">
+                                <div class="header-search-wrapper">
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search..." required>
+                                    <button class="btn" type="submit"><i class="icon-magnifier"></i></button>
+                                </div><!-- End .header-search-wrapper -->
+                            </form>
+                        </div><!-- End .header-search -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-center">
+                        <a href="index.html" class="logo">
+                            <img src="{% static 'assets/images/logo.png' %}" alt="Uptown Logo" class="img-fluid" style="height: 50px;">
+                        </a>
+                    </div><!-- End .headeer-center -->
+
+                    <div class="header-right">
+                        <div class="header-contact">
+                            <span> Whatsapp/Call</span>
+                            <a href="https://api.whatsapp.com/send?phone=254713285448"><strong>+254713285448</strong></a>
+                        </div><!-- End .header-contact -->
+
+                        <div class="dropdown cart-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <span class="cart-count">{{cartItems}}</span>
+                            </a>
+
+                            <div class="dropdown-menu" >
+                                <div class="dropdownmenu-wrapper">
+                                    <div class="dropdown-cart-header">
+                                        <span>{{cartItems}} Items</span>
+
+                                        <a href="{% url 'cart' %}">View Cart</a>
+                                    </div><!-- End .dropdown-cart-header -->
+                                    <div class="dropdown-cart-products">
+                                        {% for item in items %}
+                                        <div class="product">
+                                            <div class="product-details">
+                                                <h4 class="product-title">
+                                                    <a href="product.html">{{item.product.name}}</a>
+                                                </h4>
+
+                                                <span class="cart-product-info">
+                                                    <span class="cart-product-qty">{{item.quantity}}</span>
+                                                    x {{item.product.cash|floatformat:2|intcomma}}
+                                                </span>
+                                            </div><!-- End .product-details -->
+
+                                            <figure class="product-image-container">
+                                                <a href="product.html" class="product-image">
+                                                    <img src="{{item.product.imageURL}}" class="img-fluid" alt="product">
+                                                </a>
+                                                <a href="#" class="btn-remove" title="Remove Product"><i class="icon-cancel"></i></a>
+                                            </figure>
+                                        </div><!-- End .product -->
+                                        {% endfor %}
+
+                                    </div><!-- End .cart-product -->
+
+                                    <div class="dropdown-cart-total">
+                                        <span>Total</span>
+
+                                        <span class="cart-total-price">Ksh. {{order.get_cart_total|floatformat:2|intcomma}}</span>
+                                    </div><!-- End .dropdown-cart-total -->
+
+                                    <div class="dropdown-cart-action">
+                                        <a href="{% url 'checkout' %}" class="btn btn-block">Checkout</a>
+                                    </div><!-- End .dropdown-cart-total -->
+                                </div><!-- End .dropdownmenu-wrapper -->
+                            </div><!-- End .dropdown-menu -->
+                        </div><!-- End .dropdown -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
+
+            <div class="header-bottom sticky-header">
+                <div class="container">
+                    <nav class="main-nav">
+                        <ul class="menu sf-arrows">
+                            <li class="active"><a href="{% url 'store'%}">HOME</a></li>
+                            <li><a href="#" class="sf-with-ul">WHISKY</a>
+                                <ul>
+                                    <li><a href="#">ALL WHISKIES</a></li>
+                                    <li><a href="#">BLENDED SCOTCH</a></li>
+                                    <li><a href="#">BOURBON WHISKIES</a></li>
+                                    <li><a href="#">IRISH WHISKIES</a></li>
+                                    <li><a href="#">SINGLE MALT</a></li>
+                                    <li><a href="#">TENESEE WHISKIES</a></li>
+                                </ul>
+                            </li>
+                            <li class=""><a href="#">VODKA</a></li>
+                            <li><a href="#" class="sf-with-ul">WINE</a>
+                                <ul>
+                                    <li><a href="#">ALL WINES</a></li>
+                                    <li><a href="#">RED WINE</a></li>
+                                    <li><a href="#">WHITE WINE</a></li>
+                                    <li><a href="#">ROSE WHINE</a></li>
+                                </ul>
+                            </li>
+                            <li class=""><a href="#">CHAMPAGNE</a></li>
+                            <li class=""><a href="#">BRANDY</a></li>
+                            <li class=""><a href="#">COGNAC</a></li>
+                            <li><a href="#" class="sf-with-ul">BEER</a>
+                                <ul>
+                                    <li><a href="#">ALL BEER</a></li>
+                                    <li><a href="#">CIDER</a></li>
+                                    <li><a href="#">LAGER</a></li>
+                                    <li><a href="#">MALT</a></li>
+                                    <li><a href="#">DRAUGHT</a></li>
+                                </ul>
+                            </li>
+                            <li class=""><a href="#">TEQUILA</a></li>
+                            <li class=""><a href="#">RUM</a></li>
+                            <li class=""><a href="#">GIN</a></li>
+                            <li class=""><a href="#">LIQUER</a></li>
+                            <li class=""><a href="#">EXTRAS</a></li>
+                        </ul>
+                    </nav>
+                </div><!-- End .header-bottom -->
+            </div><!-- End .header-bottom -->
+        </header><!-- End .header -->
+
+        <main class="main">
+            <!-- Top content -->
+            {% block content1 %}
+            {% endblock %}
+            <br><br>
+            <!-- Body content -->
+            {% block content %}
+            {% endblock %}
+
+            <!-- <div class="whatsapp_chat_button">
+                <a target="_blank" href="https://api.whatsapp.com/send?phone=0713285448" class="chat_with_us ">
+                    <i title="Order via WhatsApp" aria-hidden="true" class="fab fa-whatsapp icon"></i>Chat with us on WhatsApp
+                </a>
+            </div>
+            <div class="mb-5"></div> -->
+
+
+        </main><!-- End .main -->
+
+        <footer class="footer">
+            <div class="footer-middle">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="widget">
+                                        <h4 class="widget-title">DIAL A DRINK</h4>
+
+                                        <ul class="links">
+                                            <li><a href="about.html">About Us</a></li>
+                                            <li><a href="category-flex-grid.html">Contact Us</a></li>
+                                        </ul>
+                                    </div><!-- End .widget -->
+                                </div><!-- End .col-md-3 -->
+
+                                <div class="col-md-5">
+                                    <div class="widget">
+                                        <h4 class="widget-title">GENERAL LINKS</h4>
+                                        <ul class="contact-info">
+                                            <li>
+                                                Terms and Conditions
+                                            </li>
+                                            <li>
+                                                Privacy Policy
+                                            </li>
+                                        </ul>
+                                    </div><!-- End .widget -->
+                                </div><!-- End .col-md-5 -->
+
+                                <div class="col-md-5">
+                                    <div class="widget">
+                                        <h4 class="widget-title">PAYMENT METHODS</h4>
+
+                                        <ul class="links">
+                                            <li><a href="#">Cash on Delivery</a></li>
+                                            <li><a href="#">Mpesa</a></li>
+                                        </ul>
+                                    </div><!-- End .widget -->
+                                </div><!-- End .col-md-5 -->
+                            </div><!-- End .row -->
+                        </div><!-- End .col-lg-8 -->
+
+                        <div class="col-lg-4">
+                            <div class="widget widget-newsletter">
+                                <h4 class="widget-title">SOCIAL NETWORK</h4>
+                                <p>Get IN touch with us through</p>
+                                <div class="social-icons">
+                                <a href="#" class="social-icon" target="_blank"><i class="icon-facebook"></i></a>
+                                <a href="#" class="social-icon" target="_blank"><i class="icon-twitter"></i></a>
+                                <a href="#" class="social-icon" target="_blank"><i class="icon-linkedin"></i></a>
+                                <a href="#" class="social-icon" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                            </div>
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-lg-4 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-middle -->
+
+            <div class="container">
+                <div class="footer-bottom">
+                    <div class="container-fluid">
+                    <p class="text-center">
+                         Developed by <br> Copyright © <a href="https://cktecksolutions.com/" style="color: blue;">CK TECK SOLUTION LIMITED COMPANY</a><span id="demo" class="text-center"></span>. All rights reserved.
+                    </p>
+                </div>
+                </div><!-- End .footer-bottom -->
+            </div><!-- End .containr -->
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-cancel"></i></span>
+            <nav class="mobile-nav">
+                <ul class="mobile-menu">
+                            <li class="active"><a href="index.html">HOME</a></li>
+                            <li><a href="#" class="sf-with-ul">WHISKY</a>
+                                <ul>
+                                    <li><a href="all_whiskies.html">ALL WHISKIES</a></li>
+                                    <li><a href="blended_scotch.html">BLENDED SCOTCH</a></li>
+                                    <li><a href="bourbon_whiskies.html">BOURBON WHISKIES</a></li>
+                                    <li><a href="irish_whiskies.html">IRISH WHISKIES</a></li>
+                                    <li><a href="single_malt.html">SINGLE MALT</a></li>
+                                    <li><a href="tenesee_whiskies.html">TENESEE WHISKIES</a></li>
+                                </ul>
+                            </li>
+                            <li class=""><a href="vodka.html">VODKA</a></li>
+                            <li><a href="#" class="sf-with-ul">WINE</a>
+                                <ul>
+                                    <li><a href="all_wines.html">ALL WINES</a></li>
+                                    <li><a href="red_wine.html">RED WINE</a></li>
+                                    <li><a href="white_wine.html">WHITE WINE</a></li>
+                                    <li><a href="rose_wine.html">ROSE' WHINE</a></li>
+                                </ul>
+                            </li>
+                            <li class=""><a href="champagne.html">CHAMPAGNE</a></li>
+                            <li class=""><a href="brandy.html">BRANDY</a></li>
+                            <li class=""><a href="cognac.html">COGNAC</a></li>
+                            <li><a href="#" class="sf-with-ul">BEER</a>
+                                <ul>
+                                    <li><a href="all_beer.html">ALL BEER</a></li>
+                                    <li><a href="cider.html">CIDER</a></li>
+                                    <li><a href="lager.html">LAGER</a></li>
+                                    <li><a href="malt.html">MALT</a></li>
+                                    <li><a href="draught.html">DRAUGHT</a></li>
+                                </ul>
+                            </li>
+                            <li class=""><a href="tequila.html">TEQUILA</a></li>
+                            <li class=""><a href="rum.html">RUM</a></li>
+                            <li class=""><a href="gin.html">GIN</a></li>
+                            <li class=""><a href="liquer.html">LIQUER</a></li>
+                            <li class=""><a href="extras.html">EXTRAS</a></li>
+                </ul>
+            </nav><!-- End .mobile-nav -->
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank"><i class="icon-facebook"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="icon-instagram"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .mobile-menu-container -->
+    <!-- Add Cart Modal -->
+    <div class="modal fade" id="addCartModal" tabindex="-1" role="dialog" aria-labelledby="addCartModal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body add-cart-box text-center">
+            <p>You've just added this product to the<br>cart:</p>
+            <h4 id="productTitle"></h4>
+            <img src="{{product.imageURL}}" id="productImage" width="100" height="100" alt="adding cart image">
+            <div class="btn-actions">
+                <a href="cart.html"><button class="btn-primary">Go to cart page</button></a>
+                <a href="#"><button class="btn-primary" data-dismiss="modal">Continue</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a id="scroll-top" href="#top" title="Top" role="button"><i class="icon-angle-up"></i></a>
+
+
+    <!-- Plugins JS File -->
+    <script src="{% static 'assets/js/cart.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins.min.js' %}"></script>
+
+    <!-- Main JS File -->
+    <script src="{% static 'assets/js/main.min.js' %}"></script>
+</body>
+</html>
